@@ -1,0 +1,30 @@
+name: JMeter CI
+
+on:
+  push:
+    branches: [ main ]
+
+jobs:
+  run-jmeter:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v3
+
+    - name: Install Java & JMeter
+      run: |
+        sudo apt update
+        sudo apt install -y openjdk-11-jdk wget unzip
+        wget https://archive.apache.org/dist/jmeter/binaries/apache-jmeter-5.5.zip
+        unzip apache-jmeter-5.5.zip
+
+    - name: Run JMeter test
+      run: |
+        apache-jmeter-5.5/bin/jmeter -n -t tests/load_test_domen.jmx -l result.jtl
+
+    - name: Upload results
+      uses: actions/upload-artifact@v3
+      with:
+        name: jmeter-result
+        path: result.jtl
