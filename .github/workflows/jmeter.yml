@@ -24,7 +24,7 @@ jobs:
         apache-jmeter-5.5/bin/jmeter -n -t tests/load_test_domen.jmx -l result.jtl
 
     - name: Upload results
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v2
       with:
         name: jmeter-result
         path: result.jtl
