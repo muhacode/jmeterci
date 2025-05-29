@@ -1,4 +1,4 @@
-name: JMeter CI Pipeline
+name: JMeter CI
 
 on:
   push:
@@ -12,24 +12,19 @@ jobs:
     - name: Checkout repository
       uses: actions/checkout@v3
 
-    - name: Install dependencies (Java & JMeter)
+    - name: Install Java & JMeter
       run: |
         sudo apt update
         sudo apt install -y openjdk-11-jdk wget unzip
         wget https://archive.apache.org/dist/jmeter/binaries/apache-jmeter-5.5.zip
         unzip apache-jmeter-5.5.zip
 
-    - name: Verify JMeter Installation
-      run: apache-jmeter-5.5/bin/jmeter --version
+    - name: Run JMeter test
+      run: |
+        apache-jmeter-5.5/bin/jmeter -n -t tests/load_test_domen.jmx -l result.jtl
 
-    - name: Run JMeter Load Test
-      run: apache-jmeter-5.5/bin/jmeter -n -t tests/load_test_domen.jmx -l result.jtl || exit 1
-
-    - name: Verify Test Results Exist
-      run: test -f result.jtl || { echo "Error: result.jtl not found!"; exit 1; }
-
-    - name: Upload test results
+    - name: Upload results
       uses: actions/upload-artifact@v3
       with:
-        name: jmeter-test-results
+        name: jmeter-result
         path: result.jtl
