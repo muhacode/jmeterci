@@ -18,10 +18,15 @@ jobs:
         with:
           java-version: '11'
 
+      - name: Install JMeter
+        run: |
+          wget https://archive.apache.org/dist/jmeter/binaries/apache-jmeter-5.5.zip
+          unzip apache-jmeter-5.5.zip
+
       - name: Run JMeter test
         run: |
           mkdir -p results
-          jmeter -n -t testplan.jmx -l results/result.jtl
+          apache-jmeter-5.5/bin/jmeter -n -t tests/load_test_domen.jmx -l results/result.jtl
 
       - name: Upload JMeter result
         uses: actions/upload-artifact@v2
